@@ -1,35 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:contador_de_pasos/home_screen.dart';
-import 'package:contador_de_pasos/register_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Contador de pasos',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController usuario = TextEditingController();
   final TextEditingController contrase = TextEditingController();
 
@@ -45,39 +24,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> login() async {
+  Future<void> register() async {
     String username = usuario.text;
     String password = contrase.text;
 
-    var url = Uri.parse('https://devapps.lol/login.php');
+    var url = Uri.parse(
+        'https://devapps.lol/registro.php'); // Cambia la URL a tu servidor
     var response = await http.post(
       url,
-      headers: {
-        "Content-Type":
-            "application/x-www-form-urlencoded", // Cambiado para que coincida con la configuración PHP
-      },
-      body: {
-        "username": username,
-        "password": password,
-      },
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: {"username": username, "password": password},
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      if (data == "Success") {
-        // Modificado para coincidir con la respuesta del PHP
-        showToast("Inicio de sesión exitoso", Colors.green);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-        usuario.clear();
-        contrase.clear();
+      var jsonResponse = jsonDecode(response.body);
+      if (jsonResponse == "Success") {
+        showToast("Registro exitoso", Colors.green);
+        Navigator.pop(context);
       } else {
-        showToast("Error de inicio de sesión", Colors.red);
+        showToast("Error en el registro", Colors.red);
       }
     } else {
       showToast('Error en la conexión al servidor', Colors.red);
@@ -89,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Inicio de Sesión',
+          'Registro',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -108,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    'Inicio de Sesión',
+                    'Registro',
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -139,21 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: login,
-                    child: Text(
-                      'Iniciar Sesión',
-                      style: TextStyle(fontSize: 17),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RegisterScreen()),
-                      );
-                    },
+                    onPressed: register,
                     child: Text(
                       'Registrarse',
                       style: TextStyle(fontSize: 17),

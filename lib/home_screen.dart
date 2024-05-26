@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     end: Alignment.topCenter,
                     colors: [
                       Color.fromARGB(255, 168, 187, 255),
-                      Color.fromARGB(255, 28, 255, 247)
+                      Color.fromARGB(255, 150, 245, 242)
                     ],
                   ),
                   borderRadius: BorderRadius.all(Radius.circular(27.0)),
